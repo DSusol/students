@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-class UIStudentDTO {
+public class UIStudentDTO {
 
     private Long id;
     private String firstName;
