@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Student List</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+
+    <style>
+        table.formattedTable {margin-left: auto; margin-right: auto; width:900px; border-collapse: collapse; font-size: 15px;}
+        .formattedTable th, .formattedTable td { border: solid 1px #777; padding: 5px;  }
+        .formattedTable th { background: #4C8CCE ; color:white; }
+    </style>
+
+</head>
+<body>
+
+<h1 th:text="'Student List'" style="font-size: 20px; text-align: center">Student List</h1>
+
+<table class="formattedTable table-hover" th:width="100px">
+    <thead>
+        <th style="text-align: center">Id</th>
+        <th style="text-align: center">First Name</th>
+        <th style="text-align: center">Middle Name</th>
+        <th style="text-align: center">Last Name</th>
+        <th style="text-align: center">Birth Date</th>
+        <th style="text-align: center">Group</th>
+        <th style="text-align: center">View</th>
+        <th style="text-align: center">Update</th>
+        <th style="text-align: center">Delete</th>
+    </thead>
+    <tbody th:each="student : ${students}">
+        <tr>
+            <td th:width="30" th:align="center" th:text="${student.id}" >id</td>
+            <td th:width="130" th:align="left" th:text="${student.firstName}">First Name</td>
+            <td th:width="130" th:align="left" th:text="${student.middleName}" >Middle Name</td>
+            <td th:width="130" th:align="left" th:text="${student.lastName}">Last Name</td>
+            <td th:width="130" th:align="center" th:text="${student.birthDate}">Birth Date</td>
+            <td th:width="130" th:align="center" th:text="${student.group}">Group</td>
+            <td th:width="73" th:align="center"><a href="#" th:href="@{'/students/' + ${student.id} + '/show' }">View</a></td>
+            <td th:width="73" th:align="center"><a href="#" th:href="@{'/students/' + ${student.id} + '/update' }">Update</a></td>
+            <td th:width="73" th:align="center"><a href="#" th:href="@{'/students/' + ${student.id} + '/delete' }">Delete</a></td>
+
+        </tr>
+    </tbody>
+    <td></td>
+    <td><a href="#" th:href="@{'/students/new'}"><i>Add New Student</i></a></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+</table>
+
+</body>
+</html>
