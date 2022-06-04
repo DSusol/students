@@ -90,4 +90,13 @@ class StudentDAOTest {
         verify(repository).save(any(StudentEntity.class));
         verify(entityMapper).studentEntityToStudent(any(StudentEntity.class));
     }
+
+    @Test
+    void delete_student_by_id_verification() {
+        //when
+        underTest.deleteStudentById(2L);
+
+        //then
+        verify(repository).deleteById(2L);
+    }
 }

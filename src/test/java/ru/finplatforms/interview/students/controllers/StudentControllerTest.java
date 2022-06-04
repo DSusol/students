@@ -99,4 +99,13 @@ class StudentControllerTest {
 
         verify(studentService).saveStudent(any(Student.class));
     }
+
+    @Test
+    void delete_student_verification() throws Exception {
+        mockMvc.perform(get("/students/2/delete"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/"));
+
+        verify(studentService).deleteStudentById(2L);
+    }
 }

@@ -39,4 +39,9 @@ class StudentDAOImpl implements StudentDAO {
         StudentEntity savedStudentEntity = repository.save(entityMapper.studentToStudentEntity(student));
         return entityMapper.studentEntityToStudent(savedStudentEntity);
     }
+
+    @Override
+    public void deleteStudentById(Long id) {
+        repository.deleteById(id);
+    }
 }

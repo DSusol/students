@@ -28,4 +28,9 @@ class StudentServiceImpl implements StudentService {
     public Student saveStudent(Student student) {
         return studentDAO.saveStudent(student);
     }
+
+    @Override
+    public void deleteStudentById(Long id) {
+        studentDAO.deleteStudentById(id);
+    }
 }

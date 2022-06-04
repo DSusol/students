@@ -50,4 +50,10 @@ public class StudentController {
         studentService.saveStudent(student);
         return "redirect:/";
     }
+
+    @GetMapping("/students/{studentId}/delete")
+    public String deleteStudent(@PathVariable Long studentId) {
+        studentService.deleteStudentById(studentId);
+        return "redirect:/";
+    }
 }

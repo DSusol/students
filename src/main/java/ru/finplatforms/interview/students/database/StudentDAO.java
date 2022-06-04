@@ -11,4 +11,6 @@ public interface StudentDAO {
     Student findStudentById(Long id);
 
     Student saveStudent(Student student);
+
+    void deleteStudentById(Long id);
 }
