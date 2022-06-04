@@ -1,5 +1,8 @@
 package ru.finplatforms.interview.students.controllers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -12,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.finplatforms.interview.students.domain.Student;
 import ru.finplatforms.interview.students.services.StudentService;
 
 @Controller
@@ -20,34 +22,40 @@ import ru.finplatforms.interview.students.services.StudentService;
 @RequiredArgsConstructor
 public class StudentController {
 
+    private final UIStudentDTOMapper dtoMapper;
     private final StudentService studentService;
 
     @GetMapping({"", "/", "/index", "/index.html"})
     public String studentList(Model model) {
-        model.addAttribute("students", studentService.findAllStudents());
+        List<UIStudentDTO> studentDTOs = studentService.findAllStudents().stream()
+                .map(dtoMapper::studentToUiStudentDto)
+                .collect(Collectors.toList());
+        model.addAttribute("students", studentDTOs);
         return "index";
     }
 
     @GetMapping("/students/new")
     public String newStudent(Model model) {
-        model.addAttribute("student", new Student());
+        model.addAttribute("student", new UIStudentDTO());
         return "createOrUpdateForm";
     }
 
     @GetMapping("students/{studentId}/update")
     public String updateStudent(@PathVariable Long studentId, Model model) {
-        model.addAttribute("student", studentService.findStudentById(studentId));
+        UIStudentDTO studentDTO = dtoMapper.studentToUiStudentDto(
+                studentService.findStudentById(studentId));
+        model.addAttribute("student", studentDTO);
         return "createOrUpdateForm";
     }
 
 
     @PostMapping({"students/new", "/students/{studentId}/update"})
-    public String saveOrUpdateStudent(@Valid @ModelAttribute("student") Student student, BindingResult bindingResult) {
+    public String saveOrUpdateStudent(@Valid @ModelAttribute("student") UIStudentDTO studentDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors().forEach(objectError -> log.debug(objectError.toString()));
             return "createOrUpdateForm";
         }
-        studentService.saveStudent(student);
+        studentService.saveStudent(dtoMapper.uiStudentDtoToStudent(studentDTO));
         return "redirect:/";
     }
 

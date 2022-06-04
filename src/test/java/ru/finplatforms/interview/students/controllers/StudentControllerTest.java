@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,6 +29,9 @@ import ru.finplatforms.interview.students.services.StudentService;
 class StudentControllerTest {
 
     @Mock
+    UIStudentDTOMapper dtoMapper;
+
+    @Mock
     StudentService studentService;
 
     @InjectMocks
@@ -48,6 +52,7 @@ class StudentControllerTest {
 
         //when
         when(studentService.findAllStudents()).thenReturn(students);
+        when(dtoMapper.studentToUiStudentDto(any(Student.class))).thenReturn(new UIStudentDTO());
 
         //then
         mockMvc.perform(get("/"))
@@ -56,6 +61,7 @@ class StudentControllerTest {
                 .andExpect(view().name("index"));
 
         verify(studentService).findAllStudents();
+        verify(dtoMapper, times(2)).studentToUiStudentDto(any(Student.class));
     }
 
     @Test
@@ -69,34 +75,49 @@ class StudentControllerTest {
     void update_student_form_verification() throws Exception {
         //given
         Student student = new Student();
+        UIStudentDTO studentDTO = new UIStudentDTO();
 
         //when
         when(studentService.findStudentById(2L)).thenReturn(student);
+        when(dtoMapper.studentToUiStudentDto(student)).thenReturn(studentDTO);
 
         //then
         mockMvc.perform(get("/students/2/update"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("student", is(student)))
+                .andExpect(model().attribute("student", is(studentDTO)))
                 .andExpect(view().name("createOrUpdateForm"));
 
         verify(studentService).findStudentById(anyLong());
+        verify(dtoMapper).studentToUiStudentDto(any(Student.class));
     }
 
     @Test
     void save_student_verification() throws Exception {
+
+        //when
+        when(dtoMapper.uiStudentDtoToStudent(any(UIStudentDTO.class))).thenReturn(new Student());
+
+        //then
         mockMvc.perform(post("/students/new"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
 
+        verify(dtoMapper).uiStudentDtoToStudent(any(UIStudentDTO.class));
         verify(studentService).saveStudent(any(Student.class));
     }
 
     @Test
     void update_student_verification() throws Exception {
+
+        //when
+        when(dtoMapper.uiStudentDtoToStudent(any(UIStudentDTO.class))).thenReturn(new Student());
+
+        //then
         mockMvc.perform(post("/students/2/update"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
 
+        verify(dtoMapper).uiStudentDtoToStudent(any(UIStudentDTO.class));
         verify(studentService).saveStudent(any(Student.class));
     }
 
