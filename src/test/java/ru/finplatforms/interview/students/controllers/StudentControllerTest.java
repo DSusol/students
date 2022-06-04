@@ -1,9 +1,13 @@
 package ru.finplatforms.interview.students.controllers;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -38,7 +42,7 @@ class StudentControllerTest {
     }
 
     @Test
-    void studentList() throws Exception {
+    void display_student_list_verification() throws Exception {
         //given
         List<Student> students = List.of(new Student(), new Student());
 
@@ -52,5 +56,47 @@ class StudentControllerTest {
                 .andExpect(view().name("index"));
 
         verify(studentService).findAllStudents();
+    }
+
+    @Test
+    void new_student_form_verification() throws Exception {
+        mockMvc.perform(get("/students/new"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("createOrUpdateForm"));
+    }
+
+    @Test
+    void update_student_form_verification() throws Exception {
+        //given
+        Student student = new Student();
+
+        //when
+        when(studentService.findStudentById(2L)).thenReturn(student);
+
+        //then
+        mockMvc.perform(get("/students/2/update"))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("student", is(student)))
+                .andExpect(view().name("createOrUpdateForm"));
+
+        verify(studentService).findStudentById(anyLong());
+    }
+
+    @Test
+    void save_student_verification() throws Exception {
+        mockMvc.perform(post("/students/new"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/"));
+
+        verify(studentService).saveStudent(any(Student.class));
+    }
+
+    @Test
+    void update_student_verification() throws Exception {
+        mockMvc.perform(post("/students/2/update"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/"));
+
+        verify(studentService).saveStudent(any(Student.class));
     }
 }

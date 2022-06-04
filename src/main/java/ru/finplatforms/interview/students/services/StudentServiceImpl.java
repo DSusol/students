@@ -18,4 +18,14 @@ class StudentServiceImpl implements StudentService {
     public List<Student> findAllStudents() {
         return studentDAO.findAllStudents();
     }
+
+    @Override
+    public Student findStudentById(Long id) {
+        return studentDAO.findStudentById(id);
+    }
+
+    @Override
+    public Student saveStudent(Student student) {
+        return studentDAO.saveStudent(student);
+    }
 }

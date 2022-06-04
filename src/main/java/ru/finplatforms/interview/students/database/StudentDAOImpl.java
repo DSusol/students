@@ -24,4 +24,19 @@ class StudentDAOImpl implements StudentDAO {
                 .map(entityMapper::studentEntityToStudent)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Student findStudentById(Long id) {
+        return entityMapper.studentEntityToStudent(
+                repository
+                        .findById(id)
+                        //todo: incorporate exception handler
+                        .orElseThrow(() -> new IllegalArgumentException("no Student was found for id=" + id)));
+    }
+
+    @Override
+    public Student saveStudent(Student student) {
+        StudentEntity savedStudentEntity = repository.save(entityMapper.studentToStudentEntity(student));
+        return entityMapper.studentEntityToStudent(savedStudentEntity);
+    }
 }

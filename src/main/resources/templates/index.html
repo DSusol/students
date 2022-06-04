@@ -32,7 +32,6 @@
         <th style="text-align: center">Last Name</th>
         <th style="text-align: center">Birth Date</th>
         <th style="text-align: center">Group</th>
-        <th style="text-align: center">View</th>
         <th style="text-align: center">Update</th>
         <th style="text-align: center">Delete</th>
     </thead>
@@ -44,15 +43,13 @@
             <td th:width="130" th:align="left" th:text="${student.lastName}">Last Name</td>
             <td th:width="130" th:align="center" th:text="${student.birthDate}">Birth Date</td>
             <td th:width="130" th:align="center" th:text="${student.group}">Group</td>
-            <td th:width="73" th:align="center"><a href="#" th:href="@{'/students/' + ${student.id} + '/show' }">View</a></td>
-            <td th:width="73" th:align="center"><a href="#" th:href="@{'/students/' + ${student.id} + '/update' }">Update</a></td>
-            <td th:width="73" th:align="center"><a href="#" th:href="@{'/students/' + ${student.id} + '/delete' }">Delete</a></td>
+            <td th:width="100" th:align="center"><a href="#" th:href="@{'/students/' + ${student.id} + '/update' }">Update</a></td>
+            <td th:width="100" th:align="center"><a href="#" th:href="@{'/students/' + ${student.id} + '/delete' }">Delete</a></td>
 
         </tr>
     </tbody>
     <td></td>
     <td><a href="#" th:href="@{'/students/new'}"><i>Add New Student</i></a></td>
-    <td></td>
     <td></td>
     <td></td>
     <td></td>

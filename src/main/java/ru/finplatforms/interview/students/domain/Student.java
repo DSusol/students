@@ -2,6 +2,8 @@ package ru.finplatforms.interview.students.domain;
 
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +19,9 @@ public class Student {
     private String firstName;
     private String middleName;
     private String lastName;
-    private LocalDate birthDate;
     private String group;
+
+    // todo: use DTO instead of domain objects for constrain verification
+    @DateTimeFormat(pattern = "MM/dd/yy")
+    private LocalDate birthDate;
 }
