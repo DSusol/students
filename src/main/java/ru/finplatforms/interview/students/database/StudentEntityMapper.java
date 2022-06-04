@@ -5,7 +5,7 @@ import org.mapstruct.factory.Mappers;
 
 import ru.finplatforms.interview.students.domain.Student;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface StudentEntityMapper {
 
     StudentEntityMapper INSTANCE = Mappers.getMapper(StudentEntityMapper.class);
