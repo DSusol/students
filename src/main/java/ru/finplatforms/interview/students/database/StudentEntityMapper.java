@@ -11,5 +11,6 @@ interface StudentEntityMapper {
     StudentEntityMapper INSTANCE = Mappers.getMapper(StudentEntityMapper.class);
 
     Student studentEntityToStudent(StudentEntity studentEntity);
+
     StudentEntity studentToStudentEntity(Student student);
 }

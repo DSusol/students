@@ -11,5 +11,6 @@ interface UIStudentDTOMapper {
     UIStudentDTOMapper INSTANCE = Mappers.getMapper(UIStudentDTOMapper.class);
 
     Student uiStudentDtoToStudent(UIStudentDTO studentEntity);
+
     UIStudentDTO studentToUiStudentDto(Student student);
 }
