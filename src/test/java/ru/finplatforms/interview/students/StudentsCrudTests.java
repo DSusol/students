@@ -7,10 +7,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,53 +23,65 @@ import ru.finplatforms.interview.students.controllers.UIStudentDTO;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestPropertySource("/application-test.properties")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class StudentsCrudTests {
 
     @Autowired
     MockMvc mockMvc;
 
     @Test
-    void students_crud_operations_verification() throws Exception {
+    @Order(1)
+    void when_start_application_then_have_dummy_student_list_loaded() throws Exception {
+        List<UIStudentDTO> studentList = getSavedStudentList();
+        assertThat(studentList.size()).isNotEqualTo(0);
+    }
 
-        // CHECK 1 - students are loaded to database when application starts
-        List<UIStudentDTO> currentStudentList = getSavedStudentList();
-        assertThat(currentStudentList.size()).isNotEqualTo(0);
+    @Test
+    @Order(2)
+    void when_delete_all_students_then_get_empty_saved_student_list() throws Exception {
+        //given
+        List<UIStudentDTO> studentList = getSavedStudentList();
 
-
-
-        // CHECK 2 - deleting all students
-        for (UIStudentDTO studentDTO : currentStudentList) {
-            mockMvc.perform(get("/students/" + studentDTO.getId() + "/delete"));
+        //when
+        for (UIStudentDTO student : studentList) {
+            mockMvc.perform(get("/students/" + student.getId() + "/delete"));
         }
 
-        currentStudentList = getSavedStudentList();
-        assertThat(currentStudentList.size()).isEqualTo(0);
+        //then
+        studentList = getSavedStudentList();
+        assertThat(studentList.size()).isEqualTo(0);
+    }
 
-
-
-        // CHECK 3 - creating new student
+    @Test
+    @Order(3)
+    void when_saving_new_student_then_confirm_it_is_successfully_saved() throws Exception {
+        //when
         mockMvc.perform(post("/students/new")
                 .param("firstName", "TestName"));
 
-        currentStudentList = getSavedStudentList();
-        assertThat(currentStudentList.size()).isEqualTo(1);
+        //then
+        List<UIStudentDTO> studentList = getSavedStudentList();
+        assertThat(studentList.size()).isEqualTo(1);
+        assertThat(studentList.get(0).getFirstName()).isEqualTo("TestName");
+    }
 
-        UIStudentDTO savedStudent = currentStudentList.get(0);
-        assertThat(savedStudent.getFirstName()).isEqualTo("TestName");
+    @Test
+    @Order(4)
+    void when_updating_student_then_confirm_it_is_successfully_update() throws Exception {
+        //given
+        List<UIStudentDTO> studentList = getSavedStudentList();
+        Long givenStudentId = studentList.get(0).getId();
 
-
-
-        // CHECK 4 - updating existing student
-        Long savedStudentId = savedStudent.getId();
-        mockMvc.perform(post("/students/" + savedStudentId + "/update")
-                .param("id", String.valueOf(savedStudentId))
+        //when
+        mockMvc.perform(post("/students/" + givenStudentId + "/update")
+                .param("id", String.valueOf(givenStudentId))
                 .param("firstName", "AnotherTestName"));
 
-        currentStudentList = getSavedStudentList();
-        assertThat(currentStudentList.size()).isEqualTo(1);
-
-        savedStudent = currentStudentList.get(0);
-        assertThat(savedStudent.getFirstName()).isEqualTo("AnotherTestName");
+        //then
+        studentList = getSavedStudentList();
+        assertThat(studentList.size()).isEqualTo(1);
+        assertThat(studentList.get(0).getFirstName()).isEqualTo("AnotherTestName");
     }
 
     private List<UIStudentDTO> getSavedStudentList() throws Exception {
